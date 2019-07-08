@@ -1,9 +1,11 @@
 package com.example.firebase;
 
+import java.io.Serializable;
+
 /**
  * this POJO class  have data that we need to work with it and send it to firebase
  */
-public class TravelDeal {
+public class TravelDeal  implements Serializable {
 
 
 

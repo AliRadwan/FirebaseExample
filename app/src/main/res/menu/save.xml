@@ -5,4 +5,9 @@
         android:title="Save"
         app:showAsAction="always"></item>
 
+
+    <item android:id="@+id/delete_menu"
+        android:title="Deal"
+        app:showAsAction="never"></item>
+
 </menu>

@@ -1,6 +1,7 @@
 package com.example.firebase;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -89,6 +90,7 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
     @Override
     public void onBindViewHolder(@NonNull DealViewHolder holder, int position) {
         TravelDeal deal = deals.get(position);
+        holder.bind(deal );
 
     }
 
@@ -99,16 +101,36 @@ public class DealAdapter extends RecyclerView.Adapter<DealAdapter.DealViewHolder
 
 
 
-    public class DealViewHolder extends RecyclerView.ViewHolder{
-        TextView textView;
+    public class DealViewHolder extends RecyclerView.ViewHolder
+        implements View.OnClickListener {
+        TextView textTitle;
+        TextView textDescription;
+        TextView textPrice;
+
 
         public DealViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.tv_title);
+            textTitle = itemView.findViewById(R.id.tvTitle);
+            textDescription = itemView.findViewById(R.id.tvDescription);
+            textPrice = itemView.findViewById(R.id.tvPrice);
+            itemView.setOnClickListener(this);
         }
 
         public void bind(TravelDeal travelDeal){
-            textView.setText(travelDeal.getTitle());
+            textTitle.setText(travelDeal.getTitle());
+            textDescription.setText(travelDeal.getDescription());
+            textPrice.setText(travelDeal.getPrice());
+
+        }
+
+        @Override
+        public void onClick(View view) {
+            int postion = getAdapterPosition();
+            Log.d("click",String.valueOf(postion));
+            TravelDeal selected = deals.get(postion);
+            Intent i = new Intent(view.getContext(),DealActivity.class);
+            i.putExtra("Deal",selected);
+            view.getContext().startActivity(i);
         }
     }
 }

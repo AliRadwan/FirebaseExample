@@ -1,7 +1,13 @@
 package com.example.firebase;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +26,8 @@ public class ListActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private ChildEventListener childEventListener;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,15 +38,33 @@ public class ListActivity extends AppCompatActivity {
 
         final DealAdapter adapter = new DealAdapter();
         recyclerView.setAdapter(adapter);
+//
+//        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
+//        recyclerView.setLayoutManager(layoutManager);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(layoutManager);
-
-//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
-//        recyclerView.setLayoutManager(linearLayoutManager);
-
-
+        @SuppressLint("WrongConstant") LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
+        recyclerView.setLayoutManager(linearLayoutManager);
 
 
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.list_activity_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.insert_menu:
+                Intent i = new Intent(this, DealActivity.class);
+                startActivity(i);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -16,7 +16,7 @@ import android.widget.Toast;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
- public class MainActivity extends AppCompatActivity {
+ public class DealActivity extends AppCompatActivity {
 
 
      /**
@@ -26,7 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
      private FirebaseDatabase firebaseDatabase;
      private DatabaseReference databaseReference;
-
+     TravelDeal travelDeal;
      private EditText title;
      private EditText price;
      private EditText desc;
@@ -50,17 +50,26 @@ import com.google.firebase.database.FirebaseDatabase;
         title = findViewById(R.id.edt_title);
         price = findViewById(R.id.edt_price);
         desc = findViewById(R.id.edt_description);
-
-
         button = findViewById(R.id.btn_show_data);
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(MainActivity.this,ListActivity.class);
+                Intent i = new Intent(DealActivity.this,ListActivity.class);
                 startActivity(i);
             }
         });
+
+
+
+        Intent intent = getIntent();
+        TravelDeal deal = (TravelDeal) intent.getSerializableExtra("Deal");
+        if ( deal == null){
+            deal = new TravelDeal();
+        }
+        this.travelDeal = deal;
+        title.setText(deal.getTitle());
+        desc.setText(deal.getDescription());
+        price.setText(deal.getPrice());
     }
 
 
@@ -74,6 +83,11 @@ import com.google.firebase.database.FirebaseDatabase;
                  Toast.makeText(this,"Deal save",Toast.LENGTH_LONG).show();
                  clean();
                  return true;
+
+             case R.id.delete_menu:
+                 deleteDeal();
+                 Toast.makeText(this," removed deal",Toast.LENGTH_LONG).show();
+                 backToList();
                  default:
                      return  super.onOptionsItemSelected(item);
          }
@@ -90,13 +104,37 @@ import com.google.firebase.database.FirebaseDatabase;
      // method that will save data by sent it to database
      private void saveDeal(){
 
-         String txtTitle = title.getText().toString();
-         String txtPrice = price.getText().toString();
-         String txtDeac = desc.getText().toString();
-         TravelDeal deal = new TravelDeal(txtTitle,txtPrice,txtDeac,"");
-         // to push data to firebase database
-         databaseReference.push().setValue(deal);
+         travelDeal.setTitle(title.getText().toString());
+         travelDeal.setDescription(price.getText().toString());
+         travelDeal.setPrice(desc.getText().toString());
+
+         if (travelDeal.getId() == null){
+             databaseReference.push().setValue(travelDeal);
+         }
+         else {
+             databaseReference.child(travelDeal.getId()).setValue(travelDeal);
+         }
+//         TravelDeal deal = new TravelDeal(txtTitle,txtPrice,txtDeac,"");
+//         // to push data to firebase database
+//         databaseReference.push().setValue(deal);
      }
+
+
+     private void deleteDeal(){
+         if (travelDeal == null){
+             Toast.makeText(this,"PLZ Save before delete",Toast.LENGTH_LONG).show();
+             return;
+         }
+         databaseReference.child(travelDeal.getId()).removeValue();
+     }
+
+     private void backToList(){
+         Intent i = new Intent(this,ListActivity.class);
+         startActivity(i);
+     }
+
+
+
 
      // for clean edit text after sent data
      private void clean(){
